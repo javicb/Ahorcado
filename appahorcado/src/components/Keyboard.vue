@@ -46,15 +46,17 @@ const handleClick = (letter: string, guessed: boolean) => {
 <style scoped>
 .keyboard {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(45px, 1fr));
+  grid-template-columns: repeat(10, 1fr);
   gap: 8px;
   max-width: 700px;
+  width: 100%;
   margin: 0 auto;
   padding: 20px;
 }
 
 .key {
   width: 100%;
+  min-width: 0;
   height: 50px;
   font-size: 18px;
   font-weight: bold;
@@ -107,28 +109,28 @@ const handleClick = (letter: string, guessed: boolean) => {
 /* Tablet */
 @media (max-width: 768px) {
   .keyboard {
-    grid-template-columns: repeat(auto-fit, minmax(40px, 1fr));
-    gap: 7px;
-    padding: 18px;
+    grid-template-columns: repeat(9, 1fr);
+    gap: 6px;
+    padding: 15px;
   }
 
   .key {
     height: 45px;
-    font-size: 17px;
+    font-size: 16px;
   }
 }
 
 /* Mobile */
 @media (max-width: 480px) {
   .keyboard {
-    grid-template-columns: repeat(auto-fit, minmax(32px, 1fr));
-    gap: 5px;
-    padding: 12px;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+    padding: 10px;
   }
 
   .key {
-    height: 38px;
-    font-size: 15px;
+    height: 40px;
+    font-size: 14px;
     border-width: 1.5px;
   }
 }
@@ -136,27 +138,28 @@ const handleClick = (letter: string, guessed: boolean) => {
 /* Extra small mobile */
 @media (max-width: 359px) {
   .keyboard {
-    grid-template-columns: repeat(auto-fit, minmax(28px, 1fr));
-    gap: 4px;
-    padding: 10px;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 3px;
+    padding: 8px;
   }
 
   .key {
-    height: 35px;
-    font-size: 13px;
+    height: 36px;
+    font-size: 12px;
   }
 }
 
 /* Landscape mobile */
 @media (max-width: 768px) and (orientation: landscape) {
   .keyboard {
-    max-width: 90%;
-    padding: 10px;
+    grid-template-columns: repeat(13, 1fr);
+    max-width: 95%;
+    padding: 8px;
   }
 
   .key {
-    height: 35px;
-    font-size: 14px;
+    height: 32px;
+    font-size: 13px;
   }
 }
 </style>
