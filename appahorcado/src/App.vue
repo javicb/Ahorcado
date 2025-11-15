@@ -50,67 +50,73 @@ const {
         <p class="error-text">{{ error }}</p>
       </div>
 
-      <!-- Difficulty selector -->
-      <DifficultySelector
-        v-if="!isLoading"
-        :current-difficulty="difficulty"
-        :current-language="language"
-        @change-difficulty="changeDifficulty"
-      />
+      <!-- Game content - Two column layout on desktop -->
+      <div v-if="!isLoading" class="game-content">
+        <!-- Left column: Figure and counters -->
+        <div class="left-panel">
+          <!-- Difficulty selector -->
+          <DifficultySelector
+            :current-difficulty="difficulty"
+            :current-language="language"
+            @change-difficulty="changeDifficulty"
+          />
 
-      <!-- Fail counter -->
-      <div v-if="!isLoading" class="fail-counter">
-        <span class="fail-label">{{ messages.fails }}:</span>
-        <span class="fail-count" :class="{ danger: failCount >= maxFails - 1 }">
-          {{ failCount }} / {{ maxFails }}
-        </span>
+          <!-- Fail counter -->
+          <div class="fail-counter">
+            <span class="fail-label">{{ messages.fails }}:</span>
+            <span class="fail-count" :class="{ danger: failCount >= maxFails - 1 }">
+              {{ failCount }} / {{ maxFails }}
+            </span>
+          </div>
+
+          <!-- Hangman figure -->
+          <HangmanFigure :fail-count="failCount" />
+        </div>
+
+        <!-- Right column: Word, messages and keyboard -->
+        <div class="right-panel">
+          <!-- Word display -->
+          <WordDisplay
+            :display-word="displayWord"
+            :game-status="gameStatus"
+          />
+
+          <!-- Game status messages -->
+          <div v-if="gameStatus !== 'playing'" class="game-message">
+            <p
+              class="message-text"
+              :class="{
+                'won-message': gameStatus === 'won',
+                'lost-message': gameStatus === 'lost'
+              }"
+            >
+              {{ gameStatus === 'won' ? messages.won : messages.lost }}
+            </p>
+            <p v-if="gameStatus === 'lost'" class="secret-word">
+              {{ secretWord }}
+            </p>
+            <button
+              class="restart-btn"
+              @click="restartGame"
+              aria-label="Restart game"
+            >
+              {{ messages.restart }}
+            </button>
+          </div>
+
+          <!-- Instructions when playing -->
+          <p v-else class="instructions">
+            {{ messages.selectLetter }}
+          </p>
+
+          <!-- Keyboard -->
+          <Keyboard
+            :letters="availableLetters"
+            :disabled="gameStatus !== 'playing'"
+            @select-letter="guessLetter"
+          />
+        </div>
       </div>
-
-      <!-- Hangman figure -->
-      <HangmanFigure v-if="!isLoading" :fail-count="failCount" />
-
-      <!-- Word display -->
-      <WordDisplay
-        v-if="!isLoading"
-        :display-word="displayWord"
-        :game-status="gameStatus"
-      />
-
-      <!-- Game status messages -->
-      <div v-if="gameStatus !== 'playing' && !isLoading" class="game-message">
-        <p
-          class="message-text"
-          :class="{
-            'won-message': gameStatus === 'won',
-            'lost-message': gameStatus === 'lost'
-          }"
-        >
-          {{ gameStatus === 'won' ? messages.won : messages.lost }}
-        </p>
-        <p v-if="gameStatus === 'lost'" class="secret-word">
-          {{ secretWord }}
-        </p>
-        <button
-          class="restart-btn"
-          @click="restartGame"
-          aria-label="Restart game"
-        >
-          {{ messages.restart }}
-        </button>
-      </div>
-
-      <!-- Instructions when playing -->
-      <p v-else-if="!isLoading" class="instructions">
-        {{ messages.selectLetter }}
-      </p>
-
-      <!-- Keyboard -->
-      <Keyboard
-        v-if="!isLoading"
-        :letters="availableLetters"
-        :disabled="gameStatus !== 'playing'"
-        @select-letter="guessLetter"
-      />
     </main>
 
     <!-- Footer -->
@@ -153,9 +159,54 @@ const {
   flex-direction: column;
   align-items: center;
   padding: 20px;
-  max-width: 900px;
+  max-width: 1400px;
   width: 100%;
   margin: 0 auto;
+}
+
+.game-content {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+/* Desktop layout: two columns */
+@media (min-width: 769px) {
+  .game-content {
+    grid-template-columns: 400px 1fr;
+    gap: 40px;
+  }
+
+  .game-area {
+    padding: 30px 20px;
+  }
+}
+
+/* Large desktop: more spacing */
+@media (min-width: 1200px) {
+  .game-content {
+    grid-template-columns: 450px 1fr;
+    gap: 60px;
+  }
+}
+
+.left-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: center;
+  width: 100%;
+}
+
+.right-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: center;
+  width: 100%;
+  justify-content: center;
 }
 
 .loading-container {
@@ -202,6 +253,8 @@ const {
   align-items: center;
   gap: 10px;
   box-shadow: 0 2px 8px rgba(231, 76, 60, 0.2);
+  width: 100%;
+  max-width: 600px;
 }
 
 .error-icon {
@@ -219,8 +272,10 @@ const {
   background-color: rgba(255, 255, 255, 0.9);
   padding: 15px 30px;
   border-radius: 12px;
-  margin-bottom: 20px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 300px;
+  text-align: center;
 }
 
 .fail-label {
@@ -255,10 +310,10 @@ const {
   background-color: rgba(255, 255, 255, 0.95);
   padding: 30px;
   border-radius: 12px;
-  margin: 20px 0;
   text-align: center;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   animation: slideDown 0.4s ease;
+  width: 100%;
 }
 
 @keyframes slideDown {
@@ -322,10 +377,11 @@ const {
   background-color: rgba(255, 255, 255, 0.9);
   padding: 15px 25px;
   border-radius: 8px;
-  margin: 20px 0;
   font-size: 18px;
   color: #34495e;
   font-weight: 500;
+  width: 100%;
+  text-align: center;
 }
 
 .footer {
@@ -353,7 +409,15 @@ const {
 
   .game-area {
     padding: 15px;
-    max-width: 100%;
+  }
+
+  .game-content {
+    gap: 15px;
+  }
+
+  .left-panel,
+  .right-panel {
+    gap: 15px;
   }
 
   .fail-counter {
@@ -495,10 +559,9 @@ const {
 
 /* Landscape mobile */
 @media (max-width: 768px) and (orientation: landscape) {
-  .game-area {
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: space-around;
+  .game-content {
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
   }
 
   .loading-container {
@@ -507,6 +570,11 @@ const {
 
   .game-message {
     padding: 15px 20px;
+  }
+
+  .left-panel,
+  .right-panel {
+    gap: 10px;
   }
 }
 </style>
