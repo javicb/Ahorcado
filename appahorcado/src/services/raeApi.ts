@@ -43,7 +43,7 @@ export async function getRandomWord(): Promise<string> {
     throw new Error('Formato de respuesta inválido')
   } catch (error) {
     clearTimeout(timeoutId)
-    
+
     if (error instanceof Error) {
       if (error.name === 'AbortError') {
         console.warn('RAE API timeout - usando palabras locales')
@@ -51,7 +51,7 @@ export async function getRandomWord(): Promise<string> {
         console.warn('Error al obtener palabra de RAE API:', error.message)
       }
     }
-    
+
     throw error
   }
 }
