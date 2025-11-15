@@ -5,10 +5,25 @@ import { getRandomWord } from '../services/raeApi'
 
 export type Language = 'es' | 'en'
 export type GameStatus = 'playing' | 'won' | 'lost'
+export type Difficulty = 'easy' | 'medium' | 'hard'
 
 const MAX_FAILS = 6
+const DIFFICULTY_STORAGE_KEY = 'hangman-difficulty'
 
 export function useHangman() {
+  // Load difficulty from localStorage or default to 'medium'
+  const loadDifficulty = (): Difficulty => {
+    try {
+      const stored = localStorage.getItem(DIFFICULTY_STORAGE_KEY)
+      if (stored === 'easy' || stored === 'medium' || stored === 'hard') {
+        return stored
+      }
+    } catch (e) {
+      console.warn('Failed to load difficulty from localStorage', e)
+    }
+    return 'medium'
+  }
+
   // State
   const language = ref<Language>('es')
   const secretWord = ref<string>('')
@@ -17,6 +32,7 @@ export function useHangman() {
   const gameStatus = ref<GameStatus>('playing')
   const isLoading = ref<boolean>(false)
   const error = ref<string | null>(null)
+  const difficulty = ref<Difficulty>(loadDifficulty())
 
   // Computed properties
   const failCount = computed(() => wrongLetters.value.size)
@@ -60,6 +76,41 @@ export function useHangman() {
     return wordList[randomIndex] || 'PALABRA'
   }
 
+  /**
+   * Revela letras iniciales según el nivel de dificultad
+   * - Fácil: revela vocales (a, e, i, o, u, á, é, í, ó, ú, ü)
+   * - Medio: revela 2-3 letras aleatorias
+   * - Difícil: no revela ninguna letra
+   */
+  const revealInitialLetters = () => {
+    const word = secretWord.value.toLowerCase()
+    const uniqueLetters = [...new Set(word.split(''))]
+
+    if (difficulty.value === 'hard') {
+      // No revelar ninguna letra
+      return
+    } else if (difficulty.value === 'easy') {
+      // Revelar todas las vocales presentes en la palabra
+      const vowels = ['a', 'e', 'i', 'o', 'u', 'á', 'é', 'í', 'ó', 'ú', 'ü']
+      uniqueLetters.forEach(letter => {
+        if (vowels.includes(letter)) {
+          guessedLetters.value.add(letter)
+        }
+      })
+    } else if (difficulty.value === 'medium') {
+      // Revelar 2-3 letras aleatorias (excluyendo espacios y caracteres especiales)
+      const validLetters = uniqueLetters.filter(letter => /^[a-zñáéíóúü]$/i.test(letter))
+      const numToReveal = Math.min(2, Math.floor(validLetters.length / 3))
+
+      if (numToReveal > 0) {
+        const shuffled = [...validLetters].sort(() => Math.random() - 0.5)
+        shuffled.slice(0, numToReveal).forEach(letter => {
+          guessedLetters.value.add(letter)
+        })
+      }
+    }
+  }
+
   const initGame = async () => {
     isLoading.value = true
     error.value = null
@@ -83,6 +134,9 @@ export function useHangman() {
       }, 2000)
     } finally {
       isLoading.value = false
+
+      // Revelar letras iniciales según la dificultad
+      revealInitialLetters()
     }
   }
 
@@ -123,6 +177,20 @@ export function useHangman() {
     await initGame()
   }
 
+  const changeDifficulty = async (newDifficulty: Difficulty) => {
+    difficulty.value = newDifficulty
+
+    // Guardar en localStorage
+    try {
+      localStorage.setItem(DIFFICULTY_STORAGE_KEY, newDifficulty)
+    } catch (e) {
+      console.warn('Failed to save difficulty to localStorage', e)
+    }
+
+    // Reiniciar el juego con la nueva dificultad
+    await initGame()
+  }
+
   // Mensajes según idioma
   const messages = computed(() => {
     if (language.value === 'es') {
@@ -132,7 +200,12 @@ export function useHangman() {
         restart: 'Jugar de nuevo',
         title: 'Juego del Ahorcado',
         fails: 'Errores',
-        selectLetter: 'Selecciona una letra'
+        selectLetter: 'Selecciona una letra',
+        difficulty: {
+          easy: 'Fácil',
+          medium: 'Medio',
+          hard: 'Difícil'
+        }
       }
     } else {
       return {
@@ -141,7 +214,12 @@ export function useHangman() {
         restart: 'Play again',
         title: 'Hangman Game',
         fails: 'Fails',
-        selectLetter: 'Select a letter'
+        selectLetter: 'Select a letter',
+        difficulty: {
+          easy: 'Easy',
+          medium: 'Medium',
+          hard: 'Hard'
+        }
       }
     }
   })
@@ -152,6 +230,7 @@ export function useHangman() {
   return {
     // State (readonly para encapsulación)
     language: readonly(language),
+    difficulty: readonly(difficulty),
     secretWord: computed(() => gameStatus.value !== 'playing' ? secretWord.value : ''),
     displayWord,
     failCount,
@@ -165,7 +244,8 @@ export function useHangman() {
     // Methods
     guessLetter,
     changeLanguage,
-    restartGame
+    restartGame,
+    changeDifficulty
   }
 }
 

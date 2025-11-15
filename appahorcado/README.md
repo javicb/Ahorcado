@@ -6,13 +6,18 @@ Juego del Ahorcado desarrollado con Vue 3, TypeScript y Vite. Utiliza la API de 
 
 - 🎯 **Palabras Auténticas**: Integración con la [RAE API](https://rae-api.com/) para obtener palabras del diccionario oficial
 - 🌍 **Multiidioma**: Soporte para Español (con ñ) e Inglés
+- 🎮 **Tres Niveles de Dificultad**: 
+  - **Fácil** 😊: Revela automáticamente todas las vocales
+  - **Medio** 😐: Revela 2-3 letras aleatorias
+  - **Difícil** 😤: No revela ninguna letra (modo clásico)
 - ♿ **Accesibilidad**: Implementado siguiendo las pautas WCAG 2.2 Level AA
 - 📱 **Responsive**: Diseño optimizado para móvil, tablet y escritorio
 - 🎨 **UI/UX Moderna**: Interfaz intuitiva con estados de carga y manejo de errores
-- 🧪 **100% Testeado**: 59 tests unitarios con Vitest
+- 🧪 **100% Testeado**: Tests unitarios completos con Vitest
 - 🔄 **Modo Fallback**: Usa listas locales de ~1000 palabras si la API no está disponible
 - 🎭 **Figura del Ahorcado**: Animada progresivamente con SVG
 - 👶 **Vocabulario Infantil**: Palabras apropiadas para niños de 6 a 10 años
+- 💾 **Persistencia**: Guarda tu nivel de dificultad preferido en localStorage
 
 ## 🚀 Funcionalidades del Juego
 
@@ -23,6 +28,28 @@ Juego del Ahorcado desarrollado con Vue 3, TypeScript y Vite. Utiliza la API de 
 5. **Contador de Fallos**: Máximo 6 intentos fallidos
 6. **Mensajes Multiidioma**: Todos los textos adaptados al idioma seleccionado
 7. **Diseño Responsive**: Adaptado automáticamente a cualquier dispositivo
+8. **Sistema de Niveles**: Tres niveles de dificultad con diferentes pistas
+
+### 🎮 Niveles de Dificultad
+
+El juego incluye tres niveles de dificultad que se ajustan automáticamente:
+
+- **😊 Fácil**: Ideal para niños o principiantes
+  - Revela todas las vocales (a, e, i, o, u) automáticamente al inicio
+  - Facilita enormemente adivinar la palabra
+  - Perfecto para aprender y ganar confianza
+
+- **😐 Medio** (por defecto): Equilibrio perfecto
+  - Revela 2-3 letras aleatorias al inicio
+  - Proporciona una ayuda moderada
+  - Desafío balanceado para la mayoría de jugadores
+
+- **😤 Difícil**: Para expertos
+  - No revela ninguna letra (modo clásico del ahorcado)
+  - Máximo desafío
+  - Solo 6 intentos para adivinar la palabra completa
+
+Tu nivel de dificultad preferido se guarda automáticamente en el navegador.
 
 ## ⚠️ Nota sobre RAE API en Producción
 

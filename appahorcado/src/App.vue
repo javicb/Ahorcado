@@ -4,9 +4,11 @@ import HangmanFigure from './components/HangmanFigure.vue'
 import WordDisplay from './components/WordDisplay.vue'
 import Keyboard from './components/Keyboard.vue'
 import LanguageSelector from './components/LanguageSelector.vue'
+import DifficultySelector from './components/DifficultySelector.vue'
 
 const {
   language,
+  difficulty,
   displayWord,
   failCount,
   maxFails,
@@ -16,6 +18,7 @@ const {
   guessLetter,
   changeLanguage,
   restartGame,
+  changeDifficulty,
   secretWord,
   isLoading,
   error
@@ -46,6 +49,14 @@ const {
         <span class="error-icon">⚠️</span>
         <p class="error-text">{{ error }}</p>
       </div>
+
+      <!-- Difficulty selector -->
+      <DifficultySelector
+        v-if="!isLoading"
+        :current-difficulty="difficulty"
+        :current-language="language"
+        @change-difficulty="changeDifficulty"
+      />
 
       <!-- Fail counter -->
       <div v-if="!isLoading" class="fail-counter">

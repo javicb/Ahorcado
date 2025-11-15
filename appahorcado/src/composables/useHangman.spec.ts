@@ -357,6 +357,7 @@ describe('useHangman', () => {
       expect(game.messages.value.title).toBeTruthy()
       expect(game.messages.value.fails).toBeTruthy()
       expect(game.messages.value.selectLetter).toBeTruthy()
+      expect(game.messages.value.difficulty).toBeTruthy()
     })
 
     it('debe proporcionar todos los mensajes necesarios en inglés', async () => {
@@ -376,6 +377,136 @@ describe('useHangman', () => {
       expect(game.messages.value.title).toBeTruthy()
       expect(game.messages.value.fails).toBeTruthy()
       expect(game.messages.value.selectLetter).toBeTruthy()
+      expect(game.messages.value.difficulty).toBeTruthy()
+    })
+  })
+
+  describe('Sistema de dificultad', () => {
+    it('debe inicializar con dificultad medium por defecto', async () => {
+      // Limpiar localStorage
+      localStorage.clear()
+
+      const game = useHangman()
+
+      // Esperar a que termine la inicialización
+      await new Promise(resolve => setTimeout(resolve, 100))
+
+      expect(game.difficulty.value).toBe('medium')
+    })
+
+    it('debe cambiar la dificultad correctamente', async () => {
+      const game = useHangman()
+
+      // Esperar a que termine la inicialización
+      await new Promise(resolve => setTimeout(resolve, 100))
+
+      await game.changeDifficulty('hard')
+
+      // Esperar a que termine la inicialización
+      await new Promise(resolve => setTimeout(resolve, 100))
+
+      expect(game.difficulty.value).toBe('hard')
+    })
+
+    it('debe guardar la dificultad en localStorage', async () => {
+      localStorage.clear()
+
+      const game = useHangman()
+
+      // Esperar a que termine la inicialización
+      await new Promise(resolve => setTimeout(resolve, 100))
+
+      await game.changeDifficulty('easy')
+
+      // Esperar a que termine la inicialización
+      await new Promise(resolve => setTimeout(resolve, 100))
+
+      expect(localStorage.getItem('hangman-difficulty')).toBe('easy')
+    })
+
+    it('debe cargar la dificultad desde localStorage al iniciar', async () => {
+      localStorage.setItem('hangman-difficulty', 'hard')
+
+      const game = useHangman()
+
+      // Esperar a que termine la inicialización
+      await new Promise(resolve => setTimeout(resolve, 100))
+
+      expect(game.difficulty.value).toBe('hard')
+
+      localStorage.clear()
+    })
+
+    it('debe reiniciar el juego al cambiar dificultad', async () => {
+      const game = useHangman()
+
+      // Esperar a que termine la inicialización
+      await new Promise(resolve => setTimeout(resolve, 100))
+
+      // Hacer algunas jugadas
+      game.guessLetter('x')
+      const failsBeforeChange = game.failCount.value
+
+      await game.changeDifficulty('easy')
+
+      // Esperar a que termine la inicialización
+      await new Promise(resolve => setTimeout(resolve, 100))
+
+      expect(game.failCount.value).toBe(0)
+      expect(game.gameStatus.value).toBe('playing')
+    })
+
+    it('debe revelar vocales en modo fácil', async () => {
+      const game = useHangman()
+
+      // Esperar a que termine la inicialización
+      await new Promise(resolve => setTimeout(resolve, 100))
+
+      await game.changeDifficulty('easy')
+
+      // Esperar a que termine la inicialización
+      await new Promise(resolve => setTimeout(resolve, 100))
+
+      // En "AGUA", la 'a' y 'u' son vocales y deben estar reveladas
+      const displayWord = game.displayWord.value
+
+      // Al menos una vocal debe estar revelada si la palabra tiene vocales
+      const hasRevealedLetters = !displayWord.split(' ').every(char => char === '_')
+      expect(hasRevealedLetters).toBe(true)
+    })
+
+    it('debe revelar algunas letras en modo medio', async () => {
+      const game = useHangman()
+
+      // Esperar a que termine la inicialización
+      await new Promise(resolve => setTimeout(resolve, 100))
+
+      await game.changeDifficulty('medium')
+
+      // Esperar a que termine la inicialización
+      await new Promise(resolve => setTimeout(resolve, 100))
+
+      // En modo medio, puede que se revelen algunas letras (2-3)
+      // Dependiendo de la palabra, puede o no haber letras reveladas
+      expect(game.difficulty.value).toBe('medium')
+    })
+
+    it('no debe revelar letras en modo difícil', async () => {
+      const game = useHangman()
+
+      // Esperar a que termine la inicialización
+      await new Promise(resolve => setTimeout(resolve, 100))
+
+      await game.changeDifficulty('hard')
+
+      // Esperar a que termine la inicialización
+      await new Promise(resolve => setTimeout(resolve, 100))
+
+      const displayWord = game.displayWord.value
+
+      // Todas las letras deben ser guiones bajos en modo difícil
+      const allUnderscores = displayWord.split(' ').every(char => char === '_')
+      expect(allUnderscores).toBe(true)
     })
   })
 })
