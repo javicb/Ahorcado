@@ -110,6 +110,7 @@ defineProps<{
 svg {
   width: 100%;
   height: auto;
+  display: block;
 }
 
 .fade-in {
@@ -124,6 +125,38 @@ svg {
   to {
     opacity: 1;
     transform: scale(1);
+  }
+}
+
+/* Tablet */
+@media (max-width: 768px) {
+  .hangman-figure {
+    max-width: 250px;
+    padding: 15px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+  .hangman-figure {
+    max-width: 200px;
+    padding: 10px;
+  }
+}
+
+/* Extra small mobile */
+@media (max-width: 359px) {
+  .hangman-figure {
+    max-width: 180px;
+    padding: 8px;
+  }
+}
+
+/* Landscape mobile */
+@media (max-width: 768px) and (orientation: landscape) {
+  .hangman-figure {
+    max-width: 180px;
+    padding: 10px;
   }
 }
 </style>

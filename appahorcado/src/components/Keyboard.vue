@@ -65,6 +65,9 @@ const handleClick = (letter: string, guessed: boolean) => {
   cursor: pointer;
   transition: all 0.2s ease;
   font-family: 'Arial', sans-serif;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .key:hover:not(.guessed):not(.disabled) {
@@ -101,16 +104,59 @@ const handleClick = (letter: string, guessed: boolean) => {
   opacity: 0.3;
 }
 
-@media (max-width: 600px) {
+/* Tablet */
+@media (max-width: 768px) {
   .keyboard {
-    grid-template-columns: repeat(auto-fit, minmax(35px, 1fr));
-    gap: 6px;
-    padding: 15px;
+    grid-template-columns: repeat(auto-fit, minmax(40px, 1fr));
+    gap: 7px;
+    padding: 18px;
   }
 
   .key {
-    height: 40px;
-    font-size: 16px;
+    height: 45px;
+    font-size: 17px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+  .keyboard {
+    grid-template-columns: repeat(auto-fit, minmax(32px, 1fr));
+    gap: 5px;
+    padding: 12px;
+  }
+
+  .key {
+    height: 38px;
+    font-size: 15px;
+    border-width: 1.5px;
+  }
+}
+
+/* Extra small mobile */
+@media (max-width: 359px) {
+  .keyboard {
+    grid-template-columns: repeat(auto-fit, minmax(28px, 1fr));
+    gap: 4px;
+    padding: 10px;
+  }
+
+  .key {
+    height: 35px;
+    font-size: 13px;
+  }
+}
+
+/* Landscape mobile */
+@media (max-width: 768px) and (orientation: landscape) {
+  .keyboard {
+    max-width: 90%;
+    padding: 10px;
+  }
+
+  .key {
+    height: 35px;
+    font-size: 14px;
   }
 }
 </style>

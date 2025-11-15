@@ -39,6 +39,7 @@ const emit = defineEmits<{
   gap: 10px;
   justify-content: center;
   align-items: center;
+  flex-wrap: wrap;
 }
 
 .lang-btn {
@@ -52,6 +53,9 @@ const emit = defineEmits<{
   cursor: pointer;
   transition: all 0.2s ease;
   min-width: 80px;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .lang-btn:hover {
@@ -69,11 +73,39 @@ const emit = defineEmits<{
   transform: translateY(0);
 }
 
-@media (max-width: 600px) {
+/* Tablet */
+@media (max-width: 768px) {
+  .language-selector {
+    gap: 8px;
+  }
+
+  .lang-btn {
+    padding: 7px 14px;
+    font-size: 15px;
+    min-width: 75px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+  .language-selector {
+    gap: 6px;
+  }
+
   .lang-btn {
     padding: 6px 12px;
     font-size: 14px;
-    min-width: 70px;
+    min-width: 65px;
+    border-width: 1.5px;
+  }
+}
+
+/* Extra small mobile */
+@media (max-width: 359px) {
+  .lang-btn {
+    padding: 5px 10px;
+    font-size: 13px;
+    min-width: 60px;
   }
 }
 </style>

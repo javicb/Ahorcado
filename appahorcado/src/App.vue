@@ -330,18 +330,92 @@ const {
   font-size: 14px;
 }
 
-@media (max-width: 600px) {
+/* Tablet (481px - 768px) */
+@media (max-width: 768px) {
   .header {
-    flex-direction: column;
-    text-align: center;
+    padding: 15px;
   }
 
   .title {
-    font-size: 24px;
+    font-size: 28px;
+  }
+
+  .game-area {
+    padding: 15px;
+    max-width: 100%;
   }
 
   .fail-counter {
-    padding: 10px 20px;
+    padding: 12px 25px;
+  }
+
+  .game-message {
+    padding: 25px 15px;
+  }
+
+  .message-text {
+    font-size: 24px;
+  }
+
+  .secret-word {
+    font-size: 28px;
+  }
+
+  .restart-btn {
+    padding: 10px 25px;
+    font-size: 16px;
+  }
+
+  .instructions {
+    padding: 12px 20px;
+    font-size: 16px;
+  }
+}
+
+/* Mobile (320px - 480px) */
+@media (max-width: 480px) {
+  .header {
+    flex-direction: column;
+    text-align: center;
+    padding: 12px;
+    gap: 10px;
+  }
+
+  .title {
+    font-size: 22px;
+  }
+
+  .game-area {
+    padding: 10px;
+  }
+
+  .loading-container {
+    padding: 40px 15px;
+    margin: 20px 10px;
+  }
+
+  .spinner {
+    width: 40px;
+    height: 40px;
+    border-width: 4px;
+  }
+
+  .loading-text {
+    font-size: 16px;
+  }
+
+  .error-banner {
+    padding: 12px 15px;
+    margin-bottom: 15px;
+    font-size: 14px;
+  }
+
+  .error-icon {
+    font-size: 20px;
+  }
+
+  .fail-counter {
+    padding: 8px 15px;
   }
 
   .fail-label {
@@ -352,12 +426,76 @@ const {
     font-size: 20px;
   }
 
+  .game-message {
+    padding: 20px 12px;
+    margin: 15px 0;
+  }
+
   .message-text {
-    font-size: 22px;
+    font-size: 20px;
+    margin-bottom: 15px;
   }
 
   .secret-word {
-    font-size: 24px;
+    font-size: 22px;
+    letter-spacing: 1px;
+  }
+
+  .restart-btn {
+    padding: 10px 20px;
+    font-size: 16px;
+    width: 100%;
+    max-width: 250px;
+  }
+
+  .instructions {
+    padding: 10px 15px;
+    font-size: 15px;
+    margin: 15px 0;
+  }
+
+  .footer {
+    padding: 12px;
+  }
+
+  .footer p {
+    font-size: 12px;
+  }
+}
+
+/* Extra small mobile (< 360px) */
+@media (max-width: 359px) {
+  .title {
+    font-size: 20px;
+  }
+
+  .message-text {
+    font-size: 18px;
+  }
+
+  .secret-word {
+    font-size: 20px;
+  }
+
+  .instructions {
+    font-size: 14px;
+  }
+}
+
+/* Landscape mobile */
+@media (max-width: 768px) and (orientation: landscape) {
+  .game-area {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-around;
+  }
+
+  .loading-container {
+    padding: 30px 20px;
+  }
+
+  .game-message {
+    padding: 15px 20px;
   }
 }
 </style>

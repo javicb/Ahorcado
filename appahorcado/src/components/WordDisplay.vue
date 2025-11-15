@@ -73,15 +73,67 @@ defineProps<{
   }
 }
 
-@media (max-width: 600px) {
+/* Tablet */
+@media (max-width: 768px) {
+  .word-display {
+    margin: 25px 0;
+    padding: 15px;
+  }
+
+  .letter-box {
+    width: 35px;
+    height: 45px;
+    font-size: 28px;
+  }
+
+  .word-container {
+    gap: 6px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+  .word-display {
+    margin: 20px 0;
+    padding: 10px;
+  }
+
+  .letter-box {
+    width: 28px;
+    height: 38px;
+    font-size: 22px;
+    border-bottom-width: 2px;
+  }
+
+  .word-container {
+    gap: 4px;
+  }
+}
+
+/* Extra small mobile */
+@media (max-width: 359px) {
+  .letter-box {
+    width: 25px;
+    height: 35px;
+    font-size: 20px;
+  }
+
+  .word-container {
+    gap: 3px;
+  }
+}
+
+/* Landscape mobile */
+@media (max-width: 768px) and (orientation: landscape) {
+  .word-display {
+    margin: 15px 0;
+    padding: 10px;
+  }
+
   .letter-box {
     width: 30px;
     height: 40px;
     font-size: 24px;
-  }
-
-  .word-container {
-    gap: 5px;
   }
 }
 </style>
