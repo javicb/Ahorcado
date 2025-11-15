@@ -1,9 +1,14 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { useHangman } from './useHangman'
 
-// Mock de las listas de palabras
+// Mock de la API de RAE
+vi.mock('../services/raeApi', () => ({
+  getRandomWord: vi.fn().mockResolvedValue('AGUA')
+}))
+
+// Mock de las listas de palabras (respaldo)
 vi.mock('../../data/words-es', () => ({
-  wordListES: ['PRUEBA', 'PALABRA', 'JUEGO']
+  wordListES: ['AGUA', 'CASA', 'MESA']
 }))
 
 vi.mock('../../data/words-en', () => ({
@@ -17,8 +22,11 @@ describe('useHangman', () => {
   })
 
   describe('Inicialización', () => {
-    it('debe inicializar el juego con valores por defecto', () => {
+    it('debe inicializar el juego con valores por defecto', async () => {
       const game = useHangman()
+
+      // Esperar a que termine la inicialización
+      await new Promise(resolve => setTimeout(resolve, 100))
 
       expect(game.language.value).toBe('es')
       expect(game.gameStatus.value).toBe('playing')
@@ -26,37 +34,45 @@ describe('useHangman', () => {
       expect(game.maxFails).toBe(6)
     })
 
-    it('debe seleccionar una palabra aleatoria al iniciar', () => {
+    it('debe seleccionar una palabra aleatoria al iniciar', async () => {
       const game = useHangman()
 
-      // Con Math.random() = 0, debe seleccionar la primera palabra
-      expect(game.secretWord.value).toBe('')
+      // Esperar a que termine la inicialización
+      await new Promise(resolve => setTimeout(resolve, 100))
+
       expect(game.displayWord.value).toContain('_')
     })
   })
 
   describe('Adivinación de letras', () => {
-    it('debe añadir letra correcta a guessedLetters', () => {
+    it('debe añadir letra correcta a guessedLetters', async () => {
       const game = useHangman()
 
-      // Forzar una palabra conocida
-      game.restartGame()
+      // Esperar a que termine la inicialización
+      await new Promise(resolve => setTimeout(resolve, 100))
 
-      game.guessLetter('p')
+      // La letra 'a' está en "AGUA" (mockeada)
+      game.guessLetter('a')
 
       expect(game.failCount.value).toBe(0)
     })
 
-    it('debe añadir letra incorrecta a wrongLetters', () => {
+    it('debe añadir letra incorrecta a wrongLetters', async () => {
       const game = useHangman()
+
+      // Esperar a que termine la inicialización
+      await new Promise(resolve => setTimeout(resolve, 100))
 
       game.guessLetter('z')
 
       expect(game.failCount.value).toBeGreaterThan(0)
     })
 
-    it('no debe permitir letras repetidas', () => {
+    it('no debe permitir letras repetidas', async () => {
       const game = useHangman()
+
+      // Esperar a que termine la inicialización
+      await new Promise(resolve => setTimeout(resolve, 100))
 
       game.guessLetter('a')
       const failCountAfterFirst = game.failCount.value
@@ -67,8 +83,11 @@ describe('useHangman', () => {
       expect(failCountAfterFirst).toBe(failCountAfterSecond)
     })
 
-    it('debe ignorar caracteres no alfabéticos', () => {
+    it('debe ignorar caracteres no alfabéticos', async () => {
       const game = useHangman()
+
+      // Esperar a que termine la inicialización
+      await new Promise(resolve => setTimeout(resolve, 100))
 
       const initialFailCount = game.failCount.value
 
@@ -79,8 +98,11 @@ describe('useHangman', () => {
       expect(game.failCount.value).toBe(initialFailCount)
     })
 
-    it('debe normalizar letras a minúsculas', () => {
+    it('debe normalizar letras a minúsculas', async () => {
       const game = useHangman()
+
+      // Esperar a que termine la inicialización
+      await new Promise(resolve => setTimeout(resolve, 100))
 
       game.guessLetter('A')
 
@@ -90,33 +112,46 @@ describe('useHangman', () => {
   })
 
   describe('Detección de victoria', () => {
-    it('debe detectar victoria cuando todas las letras son adivinadas', () => {
-      vi.spyOn(Math, 'random').mockReturnValue(0)
+    it('debe detectar victoria cuando todas las letras son adivinadas', async () => {
       const game = useHangman()
 
-      // Adivinar todas las letras únicas de "PRUEBA"
-      'prueba'.split('').forEach(letter => {
+      // Esperar a que termine la inicialización
+      await new Promise(resolve => setTimeout(resolve, 100))
+
+      // Adivinar todas las letras únicas de "AGUA"
+      const uniqueLetters = [...new Set('agua'.split(''))]
+      uniqueLetters.forEach(letter => {
         game.guessLetter(letter)
       })
 
       expect(game.gameStatus.value).toBe('won')
     })
 
-    it('debe mostrar mensaje de victoria correcto según idioma', () => {
+    it('debe mostrar mensaje de victoria correcto según idioma', async () => {
       const game = useHangman()
+
+      // Esperar a que termine la inicialización
+      await new Promise(resolve => setTimeout(resolve, 100))
 
       // Español
       expect(game.messages.value.won).toContain('Felicidades')
 
       // Cambiar a inglés
-      game.changeLanguage('en')
+      await game.changeLanguage('en')
+
+      // Esperar a que termine la inicialización
+      await new Promise(resolve => setTimeout(resolve, 100))
+
       expect(game.messages.value.won).toContain('Congratulations')
     })
   })
 
   describe('Detección de derrota', () => {
-    it('debe detectar derrota cuando se alcanzan 6 fallos', () => {
+    it('debe detectar derrota cuando se alcanzan 6 fallos', async () => {
       const game = useHangman()
+
+      // Esperar a que termine la inicialización
+      await new Promise(resolve => setTimeout(resolve, 100))
 
       // Adivinar letras incorrectas
       const wrongLetters = ['x', 'y', 'z', 'q', 'w', 'k']
@@ -127,8 +162,11 @@ describe('useHangman', () => {
       expect(game.gameStatus.value).toBe('lost')
     })
 
-    it('debe revelar la palabra secreta cuando se pierde', () => {
+    it('debe revelar la palabra secreta cuando se pierde', async () => {
       const game = useHangman()
+
+      // Esperar a que termine la inicialización
+      await new Promise(resolve => setTimeout(resolve, 100))
 
       // Forzar derrota
       'xyzqwk'.split('').forEach(letter => game.guessLetter(letter))
@@ -140,45 +178,67 @@ describe('useHangman', () => {
   })
 
   describe('Cambio de idioma', () => {
-    it('debe cambiar el idioma y reiniciar el juego', () => {
+    it('debe cambiar el idioma y reiniciar el juego', async () => {
       const game = useHangman()
+
+      // Esperar a que termine la inicialización
+      await new Promise(resolve => setTimeout(resolve, 100))
 
       expect(game.language.value).toBe('es')
 
-      game.changeLanguage('en')
+      await game.changeLanguage('en')
+
+      // Esperar a que termine la inicialización
+      await new Promise(resolve => setTimeout(resolve, 100))
 
       expect(game.language.value).toBe('en')
       expect(game.failCount.value).toBe(0)
       expect(game.gameStatus.value).toBe('playing')
     })
 
-    it('debe incluir ñ en el alfabeto español', () => {
+    it('debe incluir ñ en el alfabeto español', async () => {
       const game = useHangman()
+
+      // Esperar a que termine la inicialización
+      await new Promise(resolve => setTimeout(resolve, 100))
 
       expect(game.language.value).toBe('es')
       const hasÑ = game.availableLetters.value.some((l) => l.letter === 'ñ')
       expect(hasÑ).toBe(true)
     })
 
-    it('no debe incluir ñ en el alfabeto inglés', () => {
+    it('no debe incluir ñ en el alfabeto inglés', async () => {
       const game = useHangman()
 
-      game.changeLanguage('en')
+      // Esperar a que termine la inicialización
+      await new Promise(resolve => setTimeout(resolve, 100))
+
+      await game.changeLanguage('en')
+
+      // Esperar a que termine la inicialización
+      await new Promise(resolve => setTimeout(resolve, 100))
+
       const hasÑ = game.availableLetters.value.some((l) => l.letter === 'ñ')
       expect(hasÑ).toBe(false)
     })
   })
 
   describe('Reinicio del juego', () => {
-    it('debe reiniciar el juego correctamente', () => {
+    it('debe reiniciar el juego correctamente', async () => {
       const game = useHangman()
+
+      // Esperar a que termine la inicialización
+      await new Promise(resolve => setTimeout(resolve, 100))
 
       // Hacer algunas jugadas
       game.guessLetter('a')
       game.guessLetter('b')
       game.guessLetter('c')
 
-      game.restartGame()
+      await game.restartGame()
+
+      // Esperar a que termine la inicialización
+      await new Promise(resolve => setTimeout(resolve, 100))
 
       expect(game.failCount.value).toBe(0)
       expect(game.gameStatus.value).toBe('playing')
@@ -186,30 +246,39 @@ describe('useHangman', () => {
   })
 
   describe('Display de la palabra', () => {
-    it('debe mostrar guiones bajos para letras no adivinadas', () => {
+    it('debe mostrar guiones bajos para letras no adivinadas', async () => {
       const game = useHangman()
+
+      // Esperar a que termine la inicialización
+      await new Promise(resolve => setTimeout(resolve, 100))
 
       const display = game.displayWord.value
 
       expect(display).toContain('_')
     })
 
-    it('debe revelar letras correctamente adivinadas', () => {
-      vi.spyOn(Math, 'random').mockReturnValue(0)
+    it('debe revelar letras correctamente adivinadas', async () => {
       const game = useHangman()
 
-      game.guessLetter('p')
+      // Esperar a que termine la inicialización
+      await new Promise(resolve => setTimeout(resolve, 100))
+
+      // Adivinar la letra 'a' que está en "AGUA"
+      game.guessLetter('a')
 
       const display = game.displayWord.value
 
-      // Debe contener la letra P revelada
-      expect(display).toContain('P')
+      // Debe contener la letra A revelada
+      expect(display).toContain('A')
     })
   })
 
   describe('Estado de las letras disponibles', () => {
-    it('debe marcar letras como adivinadas correctamente', () => {
+    it('debe marcar letras como adivinadas correctamente', async () => {
       const game = useHangman()
+
+      // Esperar a que termine la inicialización
+      await new Promise(resolve => setTimeout(resolve, 100))
 
       game.guessLetter('a')
 
@@ -217,27 +286,33 @@ describe('useHangman', () => {
       expect(letterA?.guessed).toBe(true)
     })
 
-    it('debe distinguir entre letras correctas e incorrectas', () => {
+    it('debe distinguir entre letras correctas e incorrectas', async () => {
       const game = useHangman()
 
-      game.guessLetter('p')  // Letra en PRUEBA
-      game.guessLetter('z')  // Letra no en PRUEBA
+      // Esperar a que termine la inicialización
+      await new Promise(resolve => setTimeout(resolve, 100))
 
-      const letterP = game.availableLetters.value.find((l) => l.letter === 'p')
+      game.guessLetter('a')  // Letra en AGUA
+      game.guessLetter('z')  // Letra no en AGUA
+
+      const letterA = game.availableLetters.value.find((l) => l.letter === 'a')
       const letterZ = game.availableLetters.value.find((l) => l.letter === 'z')
 
-      expect(letterP?.correct || letterP?.wrong).toBe(true)
+      expect(letterA?.correct || letterA?.wrong).toBe(true)
       expect(letterZ?.correct || letterZ?.wrong).toBe(true)
     })
   })
 
   describe('Bloqueo después del fin del juego', () => {
-    it('no debe procesar letras después de ganar', () => {
-      vi.spyOn(Math, 'random').mockReturnValue(0)
+    it('no debe procesar letras después de ganar', async () => {
       const game = useHangman()
 
-      // Ganar el juego
-      'prueba'.split('').forEach(letter => game.guessLetter(letter))
+      // Esperar a que termine la inicialización
+      await new Promise(resolve => setTimeout(resolve, 100))
+
+      // Ganar el juego con "AGUA"
+      const uniqueLetters = [...new Set('agua'.split(''))]
+      uniqueLetters.forEach(letter => game.guessLetter(letter))
 
       expect(game.gameStatus.value).toBe('won')
 
@@ -249,8 +324,11 @@ describe('useHangman', () => {
       expect(game.failCount.value).toBe(failCountAfterWin)
     })
 
-    it('no debe procesar letras después de perder', () => {
+    it('no debe procesar letras después de perder', async () => {
       const game = useHangman()
+
+      // Esperar a que termine la inicialización
+      await new Promise(resolve => setTimeout(resolve, 100))
 
       // Perder el juego
       'xyzqwk'.split('').forEach(letter => game.guessLetter(letter))
@@ -267,8 +345,11 @@ describe('useHangman', () => {
   })
 
   describe('Mensajes multiidioma', () => {
-    it('debe proporcionar todos los mensajes necesarios en español', () => {
+    it('debe proporcionar todos los mensajes necesarios en español', async () => {
       const game = useHangman()
+
+      // Esperar a que termine la inicialización
+      await new Promise(resolve => setTimeout(resolve, 100))
 
       expect(game.messages.value.won).toBeTruthy()
       expect(game.messages.value.lost).toBeTruthy()
@@ -278,9 +359,16 @@ describe('useHangman', () => {
       expect(game.messages.value.selectLetter).toBeTruthy()
     })
 
-    it('debe proporcionar todos los mensajes necesarios en inglés', () => {
+    it('debe proporcionar todos los mensajes necesarios en inglés', async () => {
       const game = useHangman()
-      game.changeLanguage('en')
+
+      // Esperar a que termine la inicialización
+      await new Promise(resolve => setTimeout(resolve, 100))
+
+      await game.changeLanguage('en')
+
+      // Esperar a que termine la inicialización
+      await new Promise(resolve => setTimeout(resolve, 100))
 
       expect(game.messages.value.won).toBeTruthy()
       expect(game.messages.value.lost).toBeTruthy()

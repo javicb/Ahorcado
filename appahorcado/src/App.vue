@@ -16,7 +16,9 @@ const {
   guessLetter,
   changeLanguage,
   restartGame,
-  secretWord
+  secretWord,
+  isLoading,
+  error
 } = useHangman()
 </script>
 
@@ -33,8 +35,20 @@ const {
 
     <!-- Main game area -->
     <main class="game-area">
+      <!-- Loading indicator -->
+      <div v-if="isLoading" class="loading-container">
+        <div class="spinner"></div>
+        <p class="loading-text">Obteniendo palabra del diccionario...</p>
+      </div>
+
+      <!-- Error message -->
+      <div v-if="error && !isLoading" class="error-banner">
+        <span class="error-icon">⚠️</span>
+        <p class="error-text">{{ error }}</p>
+      </div>
+
       <!-- Fail counter -->
-      <div class="fail-counter">
+      <div v-if="!isLoading" class="fail-counter">
         <span class="fail-label">{{ messages.fails }}:</span>
         <span class="fail-count" :class="{ danger: failCount >= maxFails - 1 }">
           {{ failCount }} / {{ maxFails }}
@@ -42,16 +56,17 @@ const {
       </div>
 
       <!-- Hangman figure -->
-      <HangmanFigure :fail-count="failCount" />
+      <HangmanFigure v-if="!isLoading" :fail-count="failCount" />
 
       <!-- Word display -->
       <WordDisplay
+        v-if="!isLoading"
         :display-word="displayWord"
         :game-status="gameStatus"
       />
 
       <!-- Game status messages -->
-      <div v-if="gameStatus !== 'playing'" class="game-message">
+      <div v-if="gameStatus !== 'playing' && !isLoading" class="game-message">
         <p
           class="message-text"
           :class="{
@@ -74,12 +89,13 @@ const {
       </div>
 
       <!-- Instructions when playing -->
-      <p v-else class="instructions">
+      <p v-else-if="!isLoading" class="instructions">
         {{ messages.selectLetter }}
       </p>
 
       <!-- Keyboard -->
       <Keyboard
+        v-if="!isLoading"
         :letters="availableLetters"
         :disabled="gameStatus !== 'playing'"
         @select-letter="guessLetter"
@@ -129,6 +145,63 @@ const {
   max-width: 900px;
   width: 100%;
   margin: 0 auto;
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  margin: 40px 0;
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid rgba(52, 152, 219, 0.2);
+  border-top-color: #3498db;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loading-text {
+  margin-top: 20px;
+  font-size: 18px;
+  color: #34495e;
+  font-weight: 500;
+}
+
+.error-banner {
+  background-color: rgba(255, 235, 235, 0.95);
+  border: 2px solid #e74c3c;
+  border-radius: 8px;
+  padding: 15px 20px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 2px 8px rgba(231, 76, 60, 0.2);
+}
+
+.error-icon {
+  font-size: 24px;
+}
+
+.error-text {
+  margin: 0;
+  color: #c0392b;
+  font-size: 16px;
+  font-weight: 500;
 }
 
 .fail-counter {

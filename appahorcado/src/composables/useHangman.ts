@@ -1,6 +1,7 @@
 import { ref, computed, readonly } from 'vue'
 import { wordListES } from '../data/words-es'
 import { wordListEN } from '../data/words-en'
+import { getRandomWord } from '../services/raeApi'
 
 export type Language = 'es' | 'en'
 export type GameStatus = 'playing' | 'won' | 'lost'
@@ -14,6 +15,8 @@ export function useHangman() {
   const guessedLetters = ref<Set<string>>(new Set())
   const wrongLetters = ref<Set<string>>(new Set())
   const gameStatus = ref<GameStatus>('playing')
+  const isLoading = ref<boolean>(false)
+  const error = ref<string | null>(null)
 
   // Computed properties
   const failCount = computed(() => wrongLetters.value.size)
@@ -57,11 +60,25 @@ export function useHangman() {
     return wordList[randomIndex] || 'PALABRA'
   }
 
-  const initGame = () => {
-    secretWord.value = selectRandomWord(language.value)
+  const initGame = async () => {
+    isLoading.value = true
+    error.value = null
     guessedLetters.value = new Set()
     wrongLetters.value = new Set()
     gameStatus.value = 'playing'
+
+    try {
+      // Intentar obtener palabra desde la API de RAE
+      const wordFromApi = await getRandomWord()
+      secretWord.value = wordFromApi
+    } catch (err) {
+      // Si falla la API, usar palabras de respaldo
+      console.warn('Error al obtener palabra de RAE API, usando palabras de respaldo:', err)
+      error.value = 'No se pudo conectar con RAE API, usando palabras locales'
+      secretWord.value = selectRandomWord(language.value)
+    } finally {
+      isLoading.value = false
+    }
   }
 
   const guessLetter = (letter: string) => {
@@ -92,13 +109,13 @@ export function useHangman() {
     }
   }
 
-  const changeLanguage = (newLang: Language) => {
+  const changeLanguage = async (newLang: Language) => {
     language.value = newLang
-    initGame()
+    await initGame()
   }
 
-  const restartGame = () => {
-    initGame()
+  const restartGame = async () => {
+    await initGame()
   }
 
   // Mensajes según idioma
@@ -137,6 +154,8 @@ export function useHangman() {
     gameStatus: readonly(gameStatus),
     availableLetters,
     messages,
+    isLoading: readonly(isLoading),
+    error: readonly(error),
 
     // Methods
     guessLetter,
@@ -144,3 +163,4 @@ export function useHangman() {
     restartGame
   }
 }
+

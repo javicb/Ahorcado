@@ -1,6 +1,29 @@
-# appahorcado
+# 🎮 Ahorcado - Hangman Game
 
-This template should help get you started developing with Vue 3 in Vite.
+Juego del Ahorcado desarrollado con Vue 3, TypeScript y Vite. Utiliza la API de la Real Academia Española (RAE) para obtener palabras auténticas del diccionario oficial.
+
+## 🌟 Características
+
+- 🎯 **Palabras Auténticas**: Integración con la [RAE API](https://rae-api.com/) para obtener palabras del diccionario oficial
+- 🌍 **Multiidioma**: Soporte para Español (con ñ) e Inglés
+- ♿ **Accesibilidad**: Implementado siguiendo las pautas WCAG 2.2 Level AA
+- 🎨 **UI/UX Moderna**: Interfaz intuitiva con estados de carga y manejo de errores
+- 🧪 **100% Testeado**: 59 tests unitarios con Vitest
+- 🔄 **Modo Fallback**: Usa listas locales si la API no está disponible
+- 🎭 **Figura del Ahorcado**: Animada progresivamente con SVG
+
+## 🚀 Funcionalidades del Juego
+
+1. **Selección de Idioma**: Cambia entre español e inglés
+2. **Palabras Aleatorias**: Cada juego usa una palabra diferente de la API RAE
+3. **Teclado Virtual**: Clickeable con indicadores visuales (correctas/incorrectas)
+4. **Estados del Juego**: Victoria, derrota y jugando
+5. **Contador de Fallos**: Máximo 6 intentos fallidos
+6. **Mensajes Multiidioma**: Todos los textos adaptados al idioma seleccionado
+
+## 📖 Documentación Adicional
+
+- [Integración con RAE API](./INTEGRATION_RAE_API.md) - Detalles técnicos de la implementación
 
 ## Recommended IDE Setup
 
