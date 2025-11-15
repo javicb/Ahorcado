@@ -2,6 +2,7 @@ import { ref, computed, readonly } from 'vue'
 import { wordListES } from '../data/words-es'
 import { wordListEN } from '../data/words-en'
 import { getRandomWord } from '../services/raeApi'
+import { audioService } from '../services/audioService'
 
 export type Language = 'es' | 'en'
 export type GameStatus = 'playing' | 'won' | 'lost'
@@ -40,7 +41,7 @@ export function useHangman() {
   const displayWord = computed(() => {
     return secretWord.value
       .split('')
-      .map(letter => {
+      .map((letter) => {
         const lowerLetter = letter.toLowerCase()
         return guessedLetters.value.has(lowerLetter) ? letter : '_'
       })
@@ -51,21 +52,22 @@ export function useHangman() {
     return secretWord.value
       .toLowerCase()
       .split('')
-      .every(letter => guessedLetters.value.has(letter))
+      .every((letter) => guessedLetters.value.has(letter))
   })
 
   const isLost = computed(() => failCount.value >= MAX_FAILS)
 
   const availableLetters = computed(() => {
-    const alphabet = language.value === 'es'
-      ? 'abcdefghijklmnñopqrstuvwxyz'.split('')
-      : 'abcdefghijklmnopqrstuvwxyz'.split('')
+    const alphabet =
+      language.value === 'es'
+        ? 'abcdefghijklmnñopqrstuvwxyz'.split('')
+        : 'abcdefghijklmnopqrstuvwxyz'.split('')
 
-    return alphabet.map(letter => ({
+    return alphabet.map((letter) => ({
       letter,
       guessed: guessedLetters.value.has(letter) || wrongLetters.value.has(letter),
       correct: guessedLetters.value.has(letter),
-      wrong: wrongLetters.value.has(letter)
+      wrong: wrongLetters.value.has(letter),
     }))
   })
 
@@ -92,19 +94,19 @@ export function useHangman() {
     } else if (difficulty.value === 'easy') {
       // Revelar todas las vocales presentes en la palabra
       const vowels = ['a', 'e', 'i', 'o', 'u', 'á', 'é', 'í', 'ó', 'ú', 'ü']
-      uniqueLetters.forEach(letter => {
+      uniqueLetters.forEach((letter) => {
         if (vowels.includes(letter)) {
           guessedLetters.value.add(letter)
         }
       })
     } else if (difficulty.value === 'medium') {
       // Revelar 2-3 letras aleatorias (excluyendo espacios y caracteres especiales)
-      const validLetters = uniqueLetters.filter(letter => /^[a-zñáéíóúü]$/i.test(letter))
+      const validLetters = uniqueLetters.filter((letter) => /^[a-zñáéíóúü]$/i.test(letter))
       const numToReveal = Math.min(2, Math.floor(validLetters.length / 3))
 
       if (numToReveal > 0) {
         const shuffled = [...validLetters].sort(() => Math.random() - 0.5)
-        shuffled.slice(0, numToReveal).forEach(letter => {
+        shuffled.slice(0, numToReveal).forEach((letter) => {
           guessedLetters.value.add(letter)
         })
       }
@@ -156,15 +158,24 @@ export function useHangman() {
     // Verificar si la letra está en la palabra
     if (secretWord.value.toLowerCase().includes(normalizedLetter)) {
       guessedLetters.value.add(normalizedLetter)
+      audioService.play('correct')
     } else {
       wrongLetters.value.add(normalizedLetter)
+      audioService.play('wrong')
     }
 
     // Actualizar estado del juego
     if (isWon.value) {
       gameStatus.value = 'won'
+      // Pequeño delay para que se escuche el sonido de letra correcta primero
+      setTimeout(() => {
+        audioService.play('win')
+      }, 300)
     } else if (isLost.value) {
       gameStatus.value = 'lost'
+      setTimeout(() => {
+        audioService.play('lose')
+      }, 300)
     }
   }
 
@@ -204,8 +215,8 @@ export function useHangman() {
         difficulty: {
           easy: 'Fácil',
           medium: 'Medio',
-          hard: 'Difícil'
-        }
+          hard: 'Difícil',
+        },
       }
     } else {
       return {
@@ -218,8 +229,8 @@ export function useHangman() {
         difficulty: {
           easy: 'Easy',
           medium: 'Medium',
-          hard: 'Hard'
-        }
+          hard: 'Hard',
+        },
       }
     }
   })
@@ -231,7 +242,7 @@ export function useHangman() {
     // State (readonly para encapsulación)
     language: readonly(language),
     difficulty: readonly(difficulty),
-    secretWord: computed(() => gameStatus.value !== 'playing' ? secretWord.value : ''),
+    secretWord: computed(() => (gameStatus.value !== 'playing' ? secretWord.value : '')),
     displayWord,
     failCount,
     maxFails: MAX_FAILS,
@@ -245,7 +256,6 @@ export function useHangman() {
     guessLetter,
     changeLanguage,
     restartGame,
-    changeDifficulty
+    changeDifficulty,
   }
 }
-

@@ -6,7 +6,7 @@ Juego del Ahorcado desarrollado con Vue 3, TypeScript y Vite. Utiliza la API de 
 
 - 🎯 **Palabras Auténticas**: Integración con la [RAE API](https://rae-api.com/) para obtener palabras del diccionario oficial
 - 🌍 **Multiidioma**: Soporte para Español (con ñ) e Inglés
-- 🎮 **Tres Niveles de Dificultad**: 
+- 🎮 **Tres Niveles de Dificultad**:
   - **Fácil** 😊: Revela automáticamente todas las vocales
   - **Medio** 😐: Revela 2-3 letras aleatorias
   - **Difícil** 😤: No revela ninguna letra (modo clásico)
@@ -18,6 +18,7 @@ Juego del Ahorcado desarrollado con Vue 3, TypeScript y Vite. Utiliza la API de 
 - 🎭 **Figura del Ahorcado**: Animada progresivamente con SVG
 - 👶 **Vocabulario Infantil**: Palabras apropiadas para niños de 6 a 10 años
 - 💾 **Persistencia**: Guarda tu nivel de dificultad preferido en localStorage
+- 🔊 **Audio Interactivo**: Efectos de sonido que mejoran la experiencia de juego
 
 ## 🚀 Funcionalidades del Juego
 
@@ -29,6 +30,7 @@ Juego del Ahorcado desarrollado con Vue 3, TypeScript y Vite. Utiliza la API de 
 6. **Mensajes Multiidioma**: Todos los textos adaptados al idioma seleccionado
 7. **Diseño Responsive**: Adaptado automáticamente a cualquier dispositivo
 8. **Sistema de Niveles**: Tres niveles de dificultad con diferentes pistas
+9. **Efectos de Sonido**: Audio interactivo con control de activación/desactivación
 
 ### 🎮 Niveles de Dificultad
 
@@ -50,6 +52,31 @@ El juego incluye tres niveles de dificultad que se ajustan automáticamente:
   - Solo 6 intentos para adivinar la palabra completa
 
 Tu nivel de dificultad preferido se guarda automáticamente en el navegador.
+
+### 🔊 Sistema de Audio
+
+El juego incluye efectos de sonido para mejorar la experiencia de juego:
+
+- **🎵 Efectos de Sonido**:
+  - ✅ **Letra Correcta**: Melodía ascendente agradable (C5 → E5)
+  - ❌ **Letra Incorrecta**: Tonos descendentes de error (G4 → Eb4)
+  - 🎉 **Victoria**: Secuencia melódica celebratoria de 4 notas
+  - 😢 **Derrota**: Melodía descendente de final de juego
+  - 🖱️ **Click**: Retroalimentación al activar el audio
+
+- **🎛️ Control de Audio**:
+  - Botón de toggle en el header (🔊/🔇)
+  - Activación/desactivación con un click
+  - Configuración persistente (se guarda tu preferencia)
+  - Control de volumen ajustable (por defecto 50%)
+
+- **⚙️ Tecnología**:
+  - Web Audio API para generación de tonos programática
+  - Sin archivos de audio externos necesarios
+  - Compatible con todos los navegadores modernos
+  - Tonos generados dinámicamente con OscillatorNode
+
+Los efectos de sonido se reproducen automáticamente durante el juego y tu preferencia de audio se guarda en el navegador.
 
 ## ⚠️ Nota sobre RAE API en Producción
 
@@ -73,7 +100,7 @@ El juego funciona perfectamente usando las palabras del diccionario local, que e
 ## Recommended Browser Setup
 
 - Chromium-based browsers (Chrome, Edge, Brave, etc.):
-  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd) 
+  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd)
   - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
 - Firefox:
   - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)

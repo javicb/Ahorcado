@@ -5,6 +5,7 @@ import WordDisplay from './components/WordDisplay.vue'
 import Keyboard from './components/Keyboard.vue'
 import LanguageSelector from './components/LanguageSelector.vue'
 import DifficultySelector from './components/DifficultySelector.vue'
+import AudioToggle from './components/AudioToggle.vue'
 
 const {
   language,
@@ -21,7 +22,7 @@ const {
   changeDifficulty,
   secretWord,
   isLoading,
-  error
+  error,
 } = useHangman()
 </script>
 
@@ -30,10 +31,10 @@ const {
     <!-- Header -->
     <header class="header">
       <h1 class="title">{{ messages.title }}</h1>
-      <LanguageSelector
-        :current-language="language"
-        @change-language="changeLanguage"
-      />
+      <div class="header-controls">
+        <AudioToggle />
+        <LanguageSelector :current-language="language" @change-language="changeLanguage" />
+      </div>
     </header>
 
     <!-- Main game area -->
@@ -76,10 +77,7 @@ const {
         <!-- Right column: Word, messages and keyboard -->
         <div class="right-panel">
           <!-- Word display -->
-          <WordDisplay
-            :display-word="displayWord"
-            :game-status="gameStatus"
-          />
+          <WordDisplay :display-word="displayWord" :game-status="gameStatus" />
 
           <!-- Game status messages -->
           <div v-if="gameStatus !== 'playing'" class="game-message">
@@ -87,7 +85,7 @@ const {
               class="message-text"
               :class="{
                 'won-message': gameStatus === 'won',
-                'lost-message': gameStatus === 'lost'
+                'lost-message': gameStatus === 'lost',
               }"
             >
               {{ gameStatus === 'won' ? messages.won : messages.lost }}
@@ -95,11 +93,7 @@ const {
             <p v-if="gameStatus === 'lost'" class="secret-word">
               {{ secretWord }}
             </p>
-            <button
-              class="restart-btn"
-              @click="restartGame"
-              aria-label="Restart game"
-            >
+            <button class="restart-btn" @click="restartGame" aria-label="Restart game">
               {{ messages.restart }}
             </button>
           </div>
@@ -151,6 +145,12 @@ const {
   color: #2c3e50;
   font-size: 32px;
   font-weight: 700;
+}
+
+.header-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
 .game-area {
@@ -298,7 +298,8 @@ const {
 }
 
 @keyframes pulse {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 1;
   }
   50% {
