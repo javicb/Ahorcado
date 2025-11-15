@@ -73,8 +73,8 @@ export function useHangman() {
       secretWord.value = wordFromApi
     } catch (err) {
       // Si falla la API, usar palabras de respaldo
-      console.warn('Error al obtener palabra de RAE API, usando palabras de respaldo:', err)
-      error.value = 'No se pudo conectar con RAE API, usando palabras locales'
+      console.warn('API RAE no disponible, usando palabras de respaldo:', err)
+      error.value = 'Usando palabras del diccionario local'
       secretWord.value = selectRandomWord(language.value)
 
       // Limpiar el mensaje de error después de 2 segundos

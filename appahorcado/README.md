@@ -7,10 +7,12 @@ Juego del Ahorcado desarrollado con Vue 3, TypeScript y Vite. Utiliza la API de 
 - 🎯 **Palabras Auténticas**: Integración con la [RAE API](https://rae-api.com/) para obtener palabras del diccionario oficial
 - 🌍 **Multiidioma**: Soporte para Español (con ñ) e Inglés
 - ♿ **Accesibilidad**: Implementado siguiendo las pautas WCAG 2.2 Level AA
+- 📱 **Responsive**: Diseño optimizado para móvil, tablet y escritorio
 - 🎨 **UI/UX Moderna**: Interfaz intuitiva con estados de carga y manejo de errores
 - 🧪 **100% Testeado**: 59 tests unitarios con Vitest
-- 🔄 **Modo Fallback**: Usa listas locales si la API no está disponible
+- 🔄 **Modo Fallback**: Usa listas locales de ~1000 palabras si la API no está disponible
 - 🎭 **Figura del Ahorcado**: Animada progresivamente con SVG
+- 👶 **Vocabulario Infantil**: Palabras apropiadas para niños de 6 a 10 años
 
 ## 🚀 Funcionalidades del Juego
 
@@ -20,6 +22,18 @@ Juego del Ahorcado desarrollado con Vue 3, TypeScript y Vite. Utiliza la API de 
 4. **Estados del Juego**: Victoria, derrota y jugando
 5. **Contador de Fallos**: Máximo 6 intentos fallidos
 6. **Mensajes Multiidioma**: Todos los textos adaptados al idioma seleccionado
+7. **Diseño Responsive**: Adaptado automáticamente a cualquier dispositivo
+
+## ⚠️ Nota sobre RAE API en Producción
+
+La API de RAE tiene restricciones CORS que impiden su uso desde dominios externos en producción. Por este motivo:
+
+- ✅ **Funciona en desarrollo local**: La API responde correctamente
+- ❌ **No funciona en producción** (Netlify, Vercel, etc.): CORS bloqueará las peticiones
+- 🔄 **Solución automática**: El juego usa automáticamente las listas locales de ~1000 palabras
+- ⏱️ **Timeout de 3 segundos**: Las peticiones a la API se cancelan automáticamente si tardan demasiado
+
+El juego funciona perfectamente usando las palabras del diccionario local, que están optimizadas para niños de 6 a 10 años.
 
 ## 📖 Documentación Adicional
 

@@ -15,13 +15,19 @@ export interface RaeWord {
  * @returns Promise con la palabra aleatoria
  */
 export async function getRandomWord(): Promise<string> {
+  const controller = new AbortController()
+  const timeoutId = setTimeout(() => controller.abort(), 3000) // 3 segundos timeout
+
   try {
     const response = await fetch(`${RAE_API_BASE_URL}/random`, {
       method: 'GET',
       headers: {
         'Accept': 'application/json',
       },
+      signal: controller.signal,
     })
+
+    clearTimeout(timeoutId)
 
     if (!response.ok) {
       throw new Error(`Error ${response.status}: ${response.statusText}`)
@@ -36,7 +42,16 @@ export async function getRandomWord(): Promise<string> {
 
     throw new Error('Formato de respuesta inválido')
   } catch (error) {
-    console.error('Error al obtener palabra aleatoria de RAE API:', error)
+    clearTimeout(timeoutId)
+    
+    if (error instanceof Error) {
+      if (error.name === 'AbortError') {
+        console.warn('RAE API timeout - usando palabras locales')
+      } else {
+        console.warn('Error al obtener palabra de RAE API:', error.message)
+      }
+    }
+    
     throw error
   }
 }
