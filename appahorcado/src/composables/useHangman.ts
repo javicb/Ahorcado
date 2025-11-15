@@ -76,6 +76,11 @@ export function useHangman() {
       console.warn('Error al obtener palabra de RAE API, usando palabras de respaldo:', err)
       error.value = 'No se pudo conectar con RAE API, usando palabras locales'
       secretWord.value = selectRandomWord(language.value)
+
+      // Limpiar el mensaje de error después de 2 segundos
+      setTimeout(() => {
+        error.value = null
+      }, 2000)
     } finally {
       isLoading.value = false
     }
